@@ -80,6 +80,8 @@ export class ProductService {
         ...product,
         ...updateProductDto
       }
+      console.log(updateProductDto);
+      
       return await this.productRepository.save(updatedProduct);
     } catch (error) {
       console.log(error);
