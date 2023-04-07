@@ -12,7 +12,9 @@ export class CategoryEntity {
     @Column()
     description: string;
 
-    @OneToMany(type => ProductEntity, product => product.category)
+    @OneToMany(type => ProductEntity, product => product.category, {
+        cascade: true
+    })
     products: ProductEntity[];
 
     @CreateDateColumn()

@@ -25,7 +25,9 @@ export class ProductEntity {
     @ManyToOne(type => CategoryEntity, category => category.products)
     category: CategoryEntity;
 
-    @OneToMany(type => OrderItemEntity, orderItem => orderItem.product)
+    @OneToMany(type => OrderItemEntity, orderItem => orderItem.product, {
+        cascade: true
+    })
     orderItems: OrderItemEntity[];
 
     @CreateDateColumn()

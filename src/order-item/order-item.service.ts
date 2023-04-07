@@ -13,7 +13,13 @@ export class OrderItemService {
   ) {}
   async create(createOrderItemDto: CreateOrderItemDto): Promise<OrderItemEntity> {
     try {
-      return await this.orderItemRepository.save(createOrderItemDto);
+      const newOrderItem = await this.orderItemRepository.save(createOrderItemDto);
+      return await this.orderItemRepository.findOne({
+        where: {
+          id: newOrderItem.id
+        },
+        relations: ['product']
+      })
     } catch (error) {
       console.log(error);
       throw new Error(error);

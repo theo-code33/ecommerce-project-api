@@ -1,5 +1,5 @@
 import { OrderEntity } from "src/order/entities/order.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('user')
 export class UserEntity {
@@ -7,11 +7,33 @@ export class UserEntity {
     id: string;
 
     @Column()
-    username: string;
+    name: string;
+
+    @Column({
+        unique: true
+    })
+    email: string;
 
     @Column()
     password: string;
 
-    @OneToMany(type => OrderEntity, order => order.user)
+    @Column()
+    address: string;
+
+    @Column()
+    isAdmin: boolean;
+
+    @OneToMany(type => OrderEntity, order => order.user, {
+        cascade: true
+    })
     orders: OrderEntity[];
+
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @UpdateDateColumn()
+    updatedAt: Date;
+
+    @DeleteDateColumn()
+    deletedAt: Date;
 }

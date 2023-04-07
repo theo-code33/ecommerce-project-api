@@ -3,7 +3,15 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductEntity } from './entities/product.entity';
-import { DeleteResult, Repository } from 'typeorm';
+import { DeleteResult, Repository, SelectQueryBuilder } from 'typeorm';
+
+export type Order = 'ASC' | 'DESC';
+
+export type Query = {
+  limit?: number;
+  offset?: number;
+  order?: Order;
+}
 
 @Injectable()
 export class ProductService {
@@ -28,11 +36,21 @@ export class ProductService {
     }
   }
 
-  async findAll(): Promise<ProductEntity[]> {
+  async findAll(query: Query): Promise<ProductEntity[]> {
+    let { limit, offset, order } = query;
+    limit = limit || 100;
+    offset = offset || 0;
+    order = order || 'DESC';
     try {
-      return await this.productRepository.find({
-        relations: ['category']
-      });
+      const queryBuilder = await this.productRepository.createQueryBuilder('product')
+                                  .leftJoinAndSelect('product.category', 'category')
+      const [data] = await queryBuilder
+        .orderBy('product.createdAt', order)
+        .limit(limit)
+        .offset(offset)
+        .getManyAndCount()
+        
+      return data;
     } catch (error) {
       console.log(error);
       throw new Error(error);

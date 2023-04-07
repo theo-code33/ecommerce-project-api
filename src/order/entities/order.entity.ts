@@ -16,9 +16,7 @@ export class OrderEntity {
     @ManyToOne(type => UserEntity, user => user.orders)
     user: UserEntity;
 
-    @OneToMany(type => OrderItemEntity, orderItem => orderItem.order, {
-        cascade: true
-    })
+    @OneToMany(type => OrderItemEntity, orderItem => orderItem.order)
     items: OrderItemEntity[];
 
     @CreateDateColumn()

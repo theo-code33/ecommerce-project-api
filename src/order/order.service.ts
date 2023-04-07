@@ -26,7 +26,7 @@ export class OrderService {
   async findAll(): Promise<OrderEntity[]> {
     try {
       return await this.orderRepository.find({
-        relations: ['orderItems', 'orderItems.product', 'user']
+        relations: ['items', 'items.product', 'user']
       })
     } catch (error) {
       console.log(error);
@@ -40,7 +40,7 @@ export class OrderService {
         where: {
           id
         }, 
-        relations: ['orderItems', 'orderItems.product', 'user']
+        relations: ['items', 'items.product', 'user']
       })
     } catch (error) {
       console.log(error);
@@ -48,13 +48,27 @@ export class OrderService {
     }
   }
 
-  async update(id: string, updateOrderDto: UpdateOrderDto): Promise<OrderEntity> {
+  async findByUser(userId: string): Promise<OrderEntity[]> {
+    try {
+      return this.orderRepository.find({
+        where: {
+          user: {id: userId}
+        },
+        relations: ['items', 'items.product', 'user']
+      })
+    } catch (error) {
+      console.log(error);
+      throw new Error(error);
+    }
+  }
+
+  async update(id: string, updateOrderDto: UpdateOrderDto): Promise<OrderEntity> {    
     try {
       const order = await this.orderRepository.findOne({
         where: {
           id
         },
-        relations: ['orderItems', 'orderItems.product', 'user']
+        relations: ['items', 'items.product', 'user']
       })
       const updatedOrder = {
         ...order,
